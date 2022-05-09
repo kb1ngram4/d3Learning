@@ -1,58 +1,126 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>项目</th>
+            <th>分类</th>
+            <th>分项</th>
+            <th class="w">现场管理</th>
+            <th class="w">重大隐患</th>
+            <th class="w">汇总</th>
+            <th class="w">备注</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="item in tableData" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td :rowspan="item.projectspan" :class="{hidden: item.projectdis}">{{ item.project }}</td>
+            <td :rowspan="item.typespan" :class="{hidden: item.typedis}">{{ item.type }}</td>
+            <td>{{item.subentry}}</td>
+            <td>{{item.nowManage}}</td>
+            <td>{{item.Hidden}}</td>
+            <td>{{item.Total}}</td>
+            <td>{{item.remark}}</td>
+          </tr>
+          </tbody>
+      </table>
   </div>
-</template>
-
+</template>  
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
+    export default {
+        data() {
+            return {
+                title:'风险评估',
+                isShow:false,
+                isFinish:false,
+                tableData: [
+                    {
+                        id:1,
+                        project: '企业性质分类',
+                        type: '针对企业类别',
+                        subentry: '生产（危险化学品生产企业）Ⅰ类A、B、C、级',
+                        nowManage: '3.2',
+                        Hidden: '是',
+                        Total:'',
+                        remark:'备注备注'
+                    },
+                    {
+                        id:2,
+                        project: '企业性质分类',
+                        type: '针对企业类别',
+                        subentry: '使用（兰炭及配套企业）Ⅱ类A、B、C、级',
+                        nowManage: '3.2',
+                        Hidden: '是',
+                        Total:'',
+                        remark:''
+                    },
+                    {
+                        id:3,
+                        project: '企业性质分类',
+                        type: '针对企业类别',
+                        subentry: '储存、经营（加油站）Ⅲ类A、B、C、级C、级',
+                        nowManage: '3.2',
+                        Hidden: '是',
+                        Total:'',
+                        remark:''
+                    },
+                    {
+                        id:4,
+                        project: '三同时执行情况',
+                        type: '针对改扩',
+                        subentry: '改扩建未执行',
+                        nowManage: '3.2',
+                        Hidden: '是',
+                        Total:'',
+                        remark:''
+                    }
+                ]
+            }
+        },
+        created() {
+            this.getData(this.tableData);
+        },
+        methods: {
+            onEdit(){
+                this.isShow = true
+                this.isFinish=true
+            },
+            onComplete(){
+                this.isShow = false
+                this.isFinish=false
+            },
+            getData(list){
+                //console.log(list[0]);
+                for (let field in list[0]) {
+          let k = 0
+          let i = 0
+          while (k < list.length) {
+            list[k][field + 'span'] = 1
+            list[k][field + 'dis'] = false
+            for (i = k + 1; i <= list.length - 1; i++) {
+              if (list[k][field] === list[i][field] && list[k][field] !== '') {
+                list[k][field + 'span']++
+                list[k][field + 'dis'] = false
+                list[i][field + 'span'] = 1
+                list[i][field + 'dis'] = true
+              } else {
+                // k = i
+                break
+              }
+            }
+            k = i
+          }
+        }
+     return list;
+   }
+ }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+<style lang="postcss" scoped>
+.hidden{
+    display: none
 }
 </style>
